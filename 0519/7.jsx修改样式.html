@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+    <style>
+        .xiaoming{
+            background-color: aquamarine;
+        }
+    </style>
+</head>
+<body>
+    <div id="demodiv">
+        <!-- <audio src="http://m701.music.126.net/20210520160741/9382add250fb7859dcbfde1d5896e6bd/jdyyaac/obj/w5rDlsOJwrLDjj7CmsOj/8983423962/68cd/1489/fbf7/01a0e0d524f90891051d325816c07ce6.m4a" controls="controls"> 
+            </audio>-->
+    </div>
+    <script type="text/babel">
+    let newhtml=(
+        <div>
+        <p style={{color:'red',backgroundColor:'pink'}}>改变新样式</p>
+        <hr/>
+        <h1 className="xiaoming">设置类名class要用className</h1>
+            </div>
+    )
+    ReactDOM.render(newhtml,document.querySelector("#demodiv"))
+    </script>
+</body>
+</html>

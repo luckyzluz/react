@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+    let text="你好呀";
+    function MyCom(){
+        return(
+            <div>
+                <button onClick={()=>{text="变了呦";render()}}>点我变化</button>
+                <p>{text}</p>
+                </div>
+        )
+    }
+    function render(){
+        ReactDOM.render(<MyCom/>,document.querySelector("#demodiv"))
+    }
+    render()
+    </script>
+</body>
+</html>

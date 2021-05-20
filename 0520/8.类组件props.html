@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+class MyCom extends React.Component{
+    render(){
+        let {xiaominga,xiaomingb,xiaomingc}=this.props
+        return(
+            <div>
+                {
+                    /*注释*/
+                }
+                我是类组件a---{xiaominga}
+                <hr/>
+                我是类组件b---{xiaomingb}
+                <hr/>
+                我是类组件c---{xiaomingc}
+                </div>
+        )
+    }
+}
+let el=<MyCom xiaomingb="我是参数b" xiaomingc="我是参数c"/>
+ReactDOM.render(el,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>

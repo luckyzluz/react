@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点击变色</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+let arr=[11,22,33,44,55];
+let num=-1;
+function el(){
+    let newhtml=arr.map((v,i)=>{
+        return (
+            <h1 key={i} onClick={()=>{num=i;console.log(num);render()}} style={{backgroundColor:num==i?"pink":""}}>{v}</h1>
+        )
+    })
+    return newhtml
+}
+
+
+
+    function render(){
+        ReactDOM.render(el(),document.querySelector("#demodiv"))
+    }
+    render()
+    </script>
+</body>
+</html>
