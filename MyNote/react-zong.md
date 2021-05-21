@@ -1206,3 +1206,626 @@ props 是组件对外的接口。使用props就可以从外部向组件内部进
 </html>
 ```
 
+# state状态
+
+状态==数据
+
+
+
+注意 ：默认情况下在函数组件中不能使用状态（后期会有其他方式来实现）
+
+react中组件定义状态数据使用   state
+
+## 创建：
+
+  需要在constructor中使用   this.state={}来创建
+
+## 使用:  
+
+   在想展示的地方使用   this.state.xxx来进行使用
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        // 定义一个类组件
+        // 定义一个状态（数据）
+    
+
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+                // 定义状态
+                this.state={
+                    text:"我是一个字符串",
+                    num:19,
+                    bool:true,
+                    arr:[111,2222,3333,4444,5555]
+                }
+                
+            }
+            render(){
+                // 使用的时候发现有太多重复的this。state  那么我们可以使用对象解构
+                let {text,num,bool,arr}=this.state
+                return (
+                    <div>
+                       类组件
+                       {/*使用*/}
+                       <h1>{this.state.text}</h1>
+                       <h1>{this.state.num}</h1>
+                       <h1>{this.state.bool?"真":"假"}</h1>
+                       <h1>{this.state.arr[2]}</h1>
+                       <h1>解构</h1>
+                       <h1>{text}</h1>
+                       <h1>{num}</h1>
+                       <h1>{bool?"真":"假"}</h1>
+                       <h1>{arr[2]}</h1>
+                    </div>
+                )
+            }
+        }
+      
+
+
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+## 修改
+
+
+
+使用this.setState({})进行数据的修改
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+ 
+
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+                this.state={
+                    text:"我是一个字符串"
+                }  
+            }
+            // 必须要写箭头函数否自this会有问题
+            fun=()=>{
+                // 我要修改state的数据
+                // 使用this.setState({key：val})
+                this.setState({
+                    text:"我被改了"
+                })
+            }
+            render(){
+                return (
+                    <div>
+                       <h1>{this.state.text}</h1>
+                       {/*不加()不加()不加() 加了就默认执行了*/}
+                       {/*不加()不加()不加() 加了就默认执行了*/}
+                        <button onClick={this.fun}>点我修改数据</button>
+                    </div>
+                )
+            }
+        }
+      
+
+
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+## state小扩展
+
+1.为什么调用了setState之后页面数据就改变了呢？
+
+因为setState会自动触发render来进行页面的渲染
+
+2.setState是异步的？
+
+因为是异步的那么他就会有回调函数
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+ 
+
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+                this.state={
+                    text:"我是一个字符串"
+                }  
+            }
+            fun=()=>{
+                this.setState({
+                    text:"我被改了"
+                },()=>{
+                    // 这个就是setState的回调函数 他会在修改数据之后自动执行
+                    console.log(this.state.text)
+                })
+                // 上面是state的修改如果是同步的那么我在修改之后打印肯定是修改之后的数据
+                // 但是我们打印的确实修改之前的  那么这样子就应征了  setState是异步的
+
+                // 但是在业务开发的时候很多时候会用到在修改数据之后直接使用修改之后的值
+                // setstate是异步的  只要是异步操作  都会有回调函数
+                // console.log(this.state.text)
+            }
+            render(){
+                return (
+                    <div>
+                       <h1>{this.state.text}</h1>
+                        <button onClick={this.fun}>点我修改数据</button>
+                    </div>
+                )
+            }
+        }
+      
+
+
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+# 扩展--插入字符串标签
+
+dangerouslySetInnerHTML = {{ __html:你要插入的字符串 }}
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+
+                this.state={
+                    newhtml:"<em>我是斜体</em>"
+                }
+            }
+            render(){
+                let {newhtml}=this.state
+                return (
+                    <div>
+                        <h1>我要插入一段字符串html</h1>    
+                        {newhtml}
+                        {/*默认直接读取会把标签当字符串展示*/}
+                        <div dangerouslySetInnerHTML={{__html:newhtml}}>
+                        
+                        </div>
+                    </div>
+                )
+            }
+        }
+
+     
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+# 受控组件
+
+React负责渲染表单的组件。同时仍然控制用户后续输入时所发生的变化。值是来自于state控制的 输入表单元素称为“受控组件”。
+
+
+
+
+
+# React组件生命周期
+
+## React 生命周期--挂载阶段
+
+constructor()中完成了React数据的初始化，
+
+componentWillMount()一般用的比较少，它更多的是在服务端渲染时使用。它代表的过程是组件已经经历了constructor()初始化数据后，但是还未渲染DOM时。
+
+render（）进行dom渲染
+
+componentDidMount()
+组件第一次渲染完成，此时dom节点已经生成，可以在这里调用ajax请求，返回数据setState后组件会重新渲染
+
+componentWillUnmount在组件从 DOM 中移除之前立刻被调用。
+
+
+
+  
+
+# ref
+
+React提供的这个ref属性(**不能在无状态组件上使用 ref 属性**，因为它们没有实例)表示为对组件真正实例的引用其实就是ReactDOM.render()返回的组件实例
+
+ReactDOM.render()渲染组件时返回的是组件实例；而渲染dom元素时，返回是具体的dom节点。
+
+一句话总结：
+**标识组件内部的元素**
+
+## ref使用
+
+React的ref有3种用法：
+
+### 字符串(官方不推荐使用)
+
+使用ref属性起名字
+
+使用this.refs.xxx使用
+
+````html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+                
+            }
+            fun=()=>{
+                // 字符串方式使用this.refs.xxx来获取dom
+                this.refs.demop.style.color="red"
+            }
+            render(){
+                return (
+                    <div>
+                       <h1>字符串方式</h1>
+                       {/*使用ref属性给dom起个名字*/}
+                       
+                       <p ref="demop">使用ref修改我的样式</p>
+                       <button onClick={this.fun}>点我修改他</button>
+                      
+                    </div>
+                )
+            }
+        }
+      
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+````
+
+
+
+### 回调函数（官方推荐）
+
+ref={(形参代表的就是当前的dom元素)=>{变量=形参}}
+
+
+
+使用的时候直接找到变量即代表当前dom
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+                
+            }
+         
+
+            funb=()=>{
+                // 回调函数ref
+                this.xiaoming.style.backgroundColor="pink"
+            }
+            render(){
+                return (
+                    <div>
+      
+                       <h2>回调函数方式</h2>
+                       {/* <h1 ref={(形参代表的就是当前的dom元素)=>{变量=形参}}>设置我的样式</h1>*/}
+                      
+                       <h1 ref={(el)=>{this.xiaoming=el}}>设置我的样式</h1>
+                       <button onClick={this.funb}>点我修改样式</button>
+                      
+                    </div>
+                )
+            }
+        }
+      
+
+
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+
+
+### React.createRef() （React16.3新提供）
+
+
+
+React 16.3版本后才能使用
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+                // 1.我们需要在conbstructor中创建出ref对象
+                // 变量=React.createRef()
+                this.cRef=React.createRef()
+            }
+            fun=()=>{
+                // 3.使用
+                console.log(this.cRef.current)
+                this.cRef.current.style.color="red";
+            }
+            render(){
+                return (
+                    <div>
+                        <h1>createRef</h1>
+                        {/*2。绑定 刚才创建出来的ref*/}
+                        <p ref={this.cRef}>修改我</p>
+                        <button onClick={this.fun}>点我</button>
+                    </div>
+                )
+            }
+        }
+    
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+# 事件处理
+
+React事件绑定属性的命名采用小驼峰式写法。
+
+绑定函数的过程中不加() 否则函数会立即执行。
+
+## 事件处理---阻止默认行为
+
+同js原生  React中阻止默认行为使用preventDefault()；
+
+
+
+## this指向
+
+方式1：通过bind方法进行原地绑定，从而改变this指向
+
+方式2：通过创建箭头函数
+
+方式3：在constructor中提前对事件进行绑定
+
+方式4：直接在事件中编写箭头函数
+
+方式5：将事件调用的写法改为箭头函数的形式
+
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props) 
+                this.state={
+                    text:"我是测试this指向的变量"
+                }    
+                
+                // 提前绑定
+                this.fune=this.fune.bind(this)
+            }
+            // 错误的写法
+            fun=function (){
+                this.setState({
+                    text:"错误的方式"
+                })
+            }
+            // 通过创建箭头函数
+            funb=()=>{
+                this.setState({
+                    text:"通过创建箭头函数"
+                })
+            }
+            // 将事件调用的写法改为箭头函数的形式
+            func=function(){
+                this.setState({
+                    text:"将事件调用的写法改为箭头函数的形式"
+                })
+            }
+            // 通过bind方法进行原地绑定，从而改变this指向
+            fund=function(){
+                this.setState({
+                    text:"通过bind方法进行原地绑定，从而改变this指向"
+                })
+            }
+            // 在constructor中提前对事件进行绑定
+            fune=function(){
+                this.setState({
+                    text:"在constructor中提前对事件进行绑定"
+                })
+            }
+            render(){
+                return (
+                    <div>
+                        <h1>react this指向问题</h1>
+                        <h1>{this.state.text}</h1>
+                        <button onClick={this.fun}>错误方式</button>
+                        <hr/>
+                        <button onClick={this.funb}>通过创建箭头函数</button>
+                        <hr/>
+                        <button onClick={()=>{this.setState({text:"直接在事件中编写箭头函数"})}}>直接在事件中编写箭头函数</button>
+                        <hr/>
+                        <button onClick={()=>{this.func()}}>将事件调用的写法改为箭头函数的形式</button>
+                        <hr/>
+                        <button onClick={this.fund.bind(this)}>通过bind方法进行原地绑定，从而改变this指向</button>
+                        <hr/>
+                        <button onClick={this.fune}>在constructor中提前对事件进行绑定</button>
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+# React条件渲染
+
+按照指定需求显示指定内容的业务
+
+## if方式
+
+在React中使用if语句条件渲染是最简单的，**但是注意jsx中不允许有if**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component{
+            constructor(props){
+                super(props)
+    
+                this.state={
+                    bool:true
+                }
+                
+            }
+            render(){
+                // jsx中不能由if
+                if(this.state.bool){
+                    this.text="你好"          
+                }else{
+                    this.text="你坏"     
+                }
+                // 也可以由多重if结构
+
+                return (
+                    <div>
+                        <h1>if条件渲染</h1>
+                        {
+                            this.text
+                        }
+                    </div>
+                )
+            }
+        }
+      
+
+
+        ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>
+```
+
+## 三目运算符
+

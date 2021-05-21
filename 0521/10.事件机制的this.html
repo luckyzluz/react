@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+    class Mycom extends React.Component{
+        constructor(props){
+            super(props)
+            this.state={
+                text:"我是测试this指向的变量"
+            }
+            this.fune=this.fune.bind(this)
+        }
+        fun=function(){
+            this.setState({
+                text:"错误的方式"
+            })
+        }
+        funb=()=>{
+            this.setState({
+                text:"通过创建箭头函数"
+            })
+        }
+        func=function(){
+            this.setState({
+                text:"将事件调用的写法改为箭头函数的形式"
+            })
+        }
+        fund=function(){
+            this.setState({
+                text:"通过bind方法进行原地绑定，该变this指向"
+            })
+        }
+        fune=function(){
+            this.setState({
+                text:"在constructor中提前对事件进行绑定"
+            })
+        }
+        render(){
+            return(
+                <div>
+                <h1>react this指向问题</h1>
+                <h1>{this.state.text}</h1>
+                <button onClick={this.fun}>错误方式</button>
+                <hr/>
+                <button onClick={this.funb}>通过创建箭头函数</button>
+                <hr/>
+                <button onClick={()=>{this.setState({text:"直接在事件中编写箭头函数"})}}>直接在事件中编写箭头函数</button>
+                <hr/>
+                <button onClick={()=>{this.func()}}>将事件调用的写法改为箭头函数的形式</button>
+                <hr/>
+                <button onClick={this.fund.bind(this)}>通过bind方法进行原地绑定，从而改变this指向</button>
+                <hr/>
+                <button onClick={this.fune}>在constructor中提前对事件进行绑定</button>    
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>

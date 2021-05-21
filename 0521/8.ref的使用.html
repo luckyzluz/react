@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+    class Mycom extends React.Component{
+        constructor(props){
+            super(props)
+        }
+        fun=()=>{
+            this.refs.demop.style.color="red"
+        }
+        funb=()=>{
+            this.xiaoming.style.backgroundColor="pink"
+        }
+        render(){
+            return(
+                <div>
+                <h1>字符串方式</h1>  
+                <p ref="demop">使用ref修改样式</p>
+                <button onClick={this.fun}>点我修改</button> 
+                <h2>回调函数方式</h2>
+                <h1 ref={(el)=>{this.xiaoming=el}}>设置我的样式</h1>
+                <button onClick={this.funb}>点我修改</button> 
+                </div>
+            )
+        }
+    }
+    
+    ReactDOM.render(<Mycom/>,document.getElementById("demodiv"))
+    </script>
+</body>
+</html>

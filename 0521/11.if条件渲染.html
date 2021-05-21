@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+    class Mycom extends React.Component{
+        constructor(props){
+            
+                super(props)
+                this.state={
+                    bool:false
+                }
+            
+        }
+        render(){
+            if(this.state.bool){
+                this.text="你好"
+            }else{
+                this.text="你坏"
+            }
+            return(
+                <div>
+                    <h1>if条件渲染</h1>
+                    {
+                        this.text
+                    }
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(<Mycom/>,document.querySelector("#demodiv"))
+    
+    </script>
+</body>
+</html>

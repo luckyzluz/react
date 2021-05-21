@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component {
+            constructor(props) {
+                super(props)
+                this.state = {
+                    text: "我是一个字符串"
+
+                }
+            }
+            fun = () => {
+                this.setState({
+                    text: "我被改了"
+                }, () => {
+                    console.log("异步"+this.state.text);
+                })
+                console.log("点击时"+this.state.text);
+            }
+            render() {
+                return (
+                    <div>
+                        <h1>{this.state.text}</h1>
+                        <button onClick={this.fun}>点我修改</button>
+
+                    </div>
+                )
+            }
+        }
+ReactDOM.render(<Mycom/>,document.querySelector("#demodiv"))
+
+    </script>
+</body>
+
+</html>

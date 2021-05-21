@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+</head>
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+    class Mycom extends React.Component{
+        constructor(props){
+            super(props)
+            this.state={
+                text:"我是一个字符串",
+                num:99,
+                bool:true,
+                arr:[11,22,33,44,55]
+            }
+        }
+        render(){
+            let {text,num,bool,arr}=this.state;
+            return(
+                <div>
+                    <h1>{this.state.text}</h1>
+                    <h1>{this.state.num}</h1>
+                    <h1>{this.state.bool?"真":"假"}</h1>
+                    <h1>{this.state.arr[2]}</h1>
+                    <hr/>
+                    <h1>{text}</h1>
+                    <h1>{num}</h1>
+                    <h1>{bool?"真":"假"}</h1>
+                    <h1>{arr[2]}</h1>
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(<Mycom/>,document.querySelector("#demodiv"))
+    
+    </script>
+</body>
+</html>

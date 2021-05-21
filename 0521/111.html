@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="node_modules/react/umd/react.development.js"></script>
+    <script src="node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="node_modules/babel-standalone/babel.js"></script>
+    <style>
+        li {
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="demodiv"></div>
+    <script type="text/babel">
+        class Mycom extends React.Component {
+            constructor(props) {
+                super(props)
+                this.state = {
+                    arr: [//测试
+                        { title: "111", bool: true },
+                        { title: "222", bool: false },
+                        { title: "333", bool: true }
+                    ],
+                    arra: [],//添加的未完成
+                    arrb: []//移动下面的已完成
+                }
+            }
+            // 检查bool
+            boolcheck = () => {
+                return this.state.arra.map((v, i) => {
+                    v.bool = !v.bool;
+                    // console.log(v.bool);
+                    if (!v.bool) {
+                        this.state.arrb.push(this.state.arra[i])
+                        this.state.arra.splice(i, 1);
+                        console.log(this.state.arra);
+                        console.log(this.state.arrb);
+                    }
+                })
+            }
+            // 未完成
+            showinglist = () => {
+                return this.state.arra.map((v, i) => {
+                    return (
+                        <li key={i}><input type="checkbox" onClick={this.boolcheck,this.showedlist,
+                this.showinglist,this.renderx} />{v.title},{v.bool ? "真" : "假"}</li>
+                    )
+                })
+            }
+            // 已完成
+            showedlist = () => {
+                return this.state.arrb.map((v, i) => {
+                    return (
+                        <li key={i}><input type="checkbox" onClick={this.boolcheck} />{v.title}</li>
+                    )
+                })
+            }
+            // 新增未完成
+            adding = function () {
+                // 得到谁入筐的值
+                console.log(this.inputval.value)
+                // 把state的arr赋值给一个新的变量
+                let newarr = this.state.arra
+                // 修改这个新变量
+                newarr.push({ title: this.inputval.value, bool: true })
+                this.setState({
+                    arra: newarr
+                })
+            }
+            render() {
+                return (
+                    <div>
+                        <div>
+                            <input type="text" ref={(el) => { this.inputval = el }} /><button onClick={this.adding.bind(this)}>添加</button>
+                            <ul>
+                                <h1>正在进行</h1>
+                                {this.showinglist()}
+                                <h1>已完成</h1>
+                                {this.showedlist()}
+                            </ul>
+                        </div>
+
+                    </div>
+                )
+            }
+            
+            
+        }
+        function renderx(){
+            ReactDOM.render(<Mycom />, document.querySelector("#demodiv"))
+        }
+        renderx()
+    </script>
+</body>
+
+</html>
