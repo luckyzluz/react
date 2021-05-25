@@ -4,6 +4,12 @@
 
 
 
+# 如果知道脚手架项目是怎么启动的？
+
+无论是vue还是react还是angular等这些项目 查看的方式  去项目下面的package.json文件中查看  scripts选项即可
+
+
+
 # react的基本概念
 
 ## 虚拟DOM
@@ -1767,6 +1773,34 @@ React事件绑定属性的命名采用小驼峰式写法。
 </html>
 ```
 
+## 函数参数传递
+
+函数参数传递  就是给函数中传递一个实参
+
+### 方式1   把调用函数变成箭头函数方式调用
+
+```js
+ <button onClick={()=>{this.fun(1)}}>点我进行函数参数传递</button>
+ 
+  fun=(i)=>{
+        console.log(i)
+  }
+```
+
+### 方式2 bind方式
+
+```js
+ <button onClick={this.funb.bind(this,"我是参数","我是参数2")}>点我</button>
+ 
+  funb=(a,b)=>{
+        console.log(a+"-----"+b)
+    }
+```
+
+
+
+
+
 # React条件渲染
 
 按照指定需求显示指定内容的业务
@@ -1829,3 +1863,595 @@ React事件绑定属性的命名采用小驼峰式写法。
 
 ## 三目运算符
 
+
+
+
+
+# cra create-react-app 
+
+create-react-app 是facebook官方开发
+
+## create-react-app安装
+
+npm install -g create-react-app 安装脚手架
+
+create-react-app --version 查看版本
+
+cmd cd到指令安装路径下
+
+
+create-react-app 项目名  创建项目
+
+cd 项目名 切换到创建好的项目中
+
+npm start 启动运行
+
+## 拿到空项目
+
+1.删除app.js 与css中的内容
+
+## cra中如何创建组件
+
+1.在src下创建用于容纳组件的文件夹 components
+
+2.新建一个以后缀名.jsx的文件  并且在其中创建组件 (快捷键rcc)
+
+3怎么使用  
+
+​	（1）引用
+
+​	（2）使用
+
+
+
+## cra中state的使用
+
+在脚手架中state没有任何区别
+
+```jsx
+// 创建组件
+import React, { Component } from 'react'
+
+export default class home extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            text:"我是组件中的state数据"
+        }
+    }
+    fun=()=>{
+        this.setState({
+            text:"我被改了"
+        })
+    }
+    render() {
+        return (
+            <div>
+                你好我是一个组件--{this.state.text}
+                <button onClick={this.fun}>点我以我修改</button>
+            </div>
+        )
+    }
+}
+
+```
+
+## cre中使用props
+
+和本地模式没有任何区别
+
+```jsx
+import React, { Component } from 'react'
+
+export default class propsdemo extends Component {
+    render() {
+        
+        return (
+            <div>
+                <h1>我是测试props的组件{this.props.title}</h1>
+            </div>
+        )
+    }
+}
++
+```
+
+### props验证
+
+可以在项目中使用rccp快速生成   但是她所使用的验证还是prop-types库来完成
+
+## this.props.children
+
+如果在组件调用的开标签和关标签之中写入内容是否会渲染呢？
+
+不会
+
+this.props.children就能解决    它表示**组件的所有子节点**
+
+this.props.children的值有三种可能：
+1.如果当前组件没有子节点，它就是undefined;
+2.如果有一个子节点，数据类型是Object;
+3.如果有多个子节点，数据类型就是array。
+
+# 知识点扩展--空标签
+
+在下面这个例子中：
+
+因为我们要循环一段内容      但是多行必须要有父容器包裹     不包裹会出问题   
+
+但是编译之后在页面生成了很多无用代码（会导致性能浪费 ）
+
+```jsx
+import React, { Component } from 'react'
+
+export default class kong extends Component {
+    render() {
+        return (
+            <div>
+                <h1>空标签</h1>
+                {
+                    [1,2,3,4,5].map((v,i)=>{
+                        return (
+                            <div>
+                                <h1>循环我1</h1>
+                                <h1>循环我2</h1>
+                                <h1>循环我3</h1>
+                            </div>
+                           
+                        )
+                    })
+                }
+            </div>
+        )
+    }
+}
+
+```
+
+我们可以使用空标签来进行   这个空标签仅仅是包裹的作用 不参与页面渲染
+
+第一种
+
+<></>空标签(但是不推荐  因为你这样写可能测试弄死你)
+
+```jsx
+ [1,2,3,4,5].map((v,i)=>{
+                        return (
+                            // 不写任何内容空标签
+                            <>
+                                <h1>循环我1</h1>
+                                <h1>循环我2</h1>
+                                <h1>循环我3</h1>
+                            </>
+                           
+                        )
+                    })
+```
+
+方式2
+
+ Fragment不在DOM中增加额外节点或者
+
+```jsx
+import React, { Component,Fragment } from 'react'
+
+export default class kong extends Component {
+    render() {
+        return (
+            <div>
+                <h1>空标签</h1>
+                {
+                    [1,2,3,4,5].map((v,i)=>{
+                        return (
+                            // 不写任何内容空标签
+                            // <>
+                            //     <h1>循环我1</h1>
+                            //     <h1>循环我2</h1>
+                            //     <h1>循环我3</h1>
+                            // </>
+                            <Fragment>
+                                <h1>循环我1</h1>
+                                <h1>循环我2</h1>
+                                <h1>循环我3</h1>
+                            </Fragment>
+                            
+                           
+                        )
+                    })
+                }
+            </div>
+        )
+    }
+}
+
+```
+
+# 知识扩展---强制刷新/强制触发render
+
+​     this.forceUpdate()强制触发render渲染
+
+```jsx
+import React, { Component } from 'react'
+
+export default class demo extends Component {
+    constructor(props){
+        super(props)
+        this.text="你好"
+    }
+    fun=()=>{
+        this.text="你坏"
+        console.log(this.text)
+        // 强制触发render渲染
+        this.forceUpdate()
+    }
+    render() {
+        return (
+            <div>
+                <h1>强制刷新---{this.text}</h1>
+                <button onClick={this.fun}>点我修改</button>
+            </div>
+        )
+    }
+}
+
+```
+
+# 组件传值
+
+## 正向传值
+
+Props
+
+## 逆向传值
+
+任何内容逆向传值都相对来说比较麻烦
+
+语法：
+
+默认不被允许  必须要通过事件来触发
+
+逆向传值没有专门的语法，他是依赖react的正向传值props的。逆向传值只需要让父组件传递一个函数给子组件。子组件通过bind绑定当前的数据 那么父组件的函数就能接受到参数
+
+子组件：
+
+```jsx
+import React, { Component } from 'react'
+
+export default class zi extends Component {
+    render() {
+        return (
+            <div>
+                zizizizizizziu
+                {/* 逆向传值没有专门的语法
+                他是依赖react的正向传值props的
+                逆向传值只需要让父组件传递一个函数给子组件
+                子组件通过bind绑定当前的数据 那么父组件的函数就能接受到参数 */}
+                <button onClick={this.props.zifun.bind(this,"我是子组件的数据")}>点我进行逆向传值</button>
+            </div>
+        )
+    }
+}
+
+```
+
+父组件:
+
+```jsx
+import React, { Component } from 'react'
+import Zi from "./zi.jsx"
+export default class fu extends Component {
+    fufun=(val)=>{
+        console.log(val)
+    }
+    render() {
+        return (
+            <div>
+                fufufuffufufufu
+                <Zi zifun={this.fufun}/>
+            </div>
+        )
+    }
+}
+
+```
+
+## 同胞传值
+
+使用pubsub-js  来进行同胞兄弟的传值
+
+1.npm install --save pubsub-js
+
+传递数据的组件  数据抛出 PubSub.publish("事件名","数据")
+
+```jsx
+import React, { Component } from 'react'
+// 1.引用pubsub-js
+import PubSub from "pubsub-js"
+
+export default class puba extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            pubatext:"我是a的数据"
+        }
+    }
+    fun=()=>{
+        // 2.开始抛出自定义事件（publish自定义事件）
+        PubSub.publish("pao",this.state.pubatext)
+    }
+    render() {
+        return (
+            <div>
+                aaaaaaaaa <button onClick={this.fun}>点我把数据给我兄弟b</button>
+            </div>
+        )
+    }
+}
+
+```
+
+
+
+接受数据的组件    在第二个组件中接收   PubSub.subscribe("监听的事件",(事件,数据)=>{})
+
+```jsx
+import React, { Component } from 'react'
+// 1.引用pubsub-js
+import PubSub from "pubsub-js"
+export default class pubb extends Component {
+    // 2.在钩子中监听同胞组件抛出的自定义事件
+    componentDidMount() {
+        // 回调函数中两个形参分别是   事件,数据
+        PubSub.subscribe("pao",(a,b)=>{
+            console.log(a)
+            console.log(b)
+        })
+    }
+    
+    render() {
+        return (
+            <div>
+                bbbbbbbbb
+            </div>
+        )
+    }
+}
+
+```
+
+
+
+## 跨组件传值
+
+react中自带的
+
+### context上下文对象
+
+context：上下文对象
+
+context很好的解决了跨组件传值的复杂度。可以快速的进行跨组件数据的传递。
+
+想要使用context进行跨组件传值那么就要使用createContext()方法同时方法中给我们提供了两个对象：
+
+Provider对象      生产者---->用来生产数据
+Consumer对象   消费者---->用来使用数据
+
+使用：
+
+1.创建文件夹与文件用来容纳上下问对象的基本内容
+
+```js
+// 当前这个文件就是用来容纳上下文对象的
+import React, { Component } from 'react'
+
+export default class Contextdemo extends Component {
+    render() {
+        return (
+            <div>
+                {/* 设置this.props.children */}
+                {this.props.children}
+            </div>
+        )
+    }
+}
+
+```
+
+2.让这个上下文对象组件 设置成所有组件的爸爸 在index.js中进行设置
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './components/contextdemo/ye.jsx';
+import reportWebVitals from './reportWebVitals';
+
+// 引用上下文对象组件
+import Contextdemo from "./context/index.js"
+
+ReactDOM.render(
+  // 包裹让所有的组件变成他的子组件
+  <Contextdemo>
+    <App />
+  </Contextdemo>,
+  document.getElementById('root')
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+```
+
+3.创建上下文对象 并且生产数据与 抛出消费者对象
+
+```js
+// 当前这个文件就是用来容纳上下文对象的
+// 从react中解构createContext()
+import React, { Component,createContext } from 'react'
+
+
+// 1.把创建上下对象的方法赋值给一个变量方便使用
+let context=createContext()
+let {Provider,Consumer}=context
+
+
+class Contextdemo extends Component {
+    render() {
+        return (
+            <div>
+             {/* 使用数据的生产者生产传递数据 */}
+                <Provider value={123}>
+                {/* 设置this.props.children */}
+                {this.props.children}
+                </Provider>
+            </div>
+        )
+    }
+}
+// 由于现在不是单纯的暴漏这个组件了 还要消费者方法所以修改暴漏方式
+export {Contextdemo,Consumer}
+```
+
+4.修改引用
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './components/contextdemo/ye.jsx';
+import reportWebVitals from './reportWebVitals';
+
+// 引用上下文对象组件
+// 由于之前的组件暴漏变成了而export  所以修改引用
+import {Contextdemo} from "./context/index.js"
+
+ReactDOM.render(
+  // 包裹让所有的组件变成他的子组件
+  <Contextdemo>
+    <App />
+  </Contextdemo>,
+  document.getElementById('root')
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+```
+
+5使用数据
+
+在使用的位置
+
+```jsx
+import React, { Component } from 'react'
+// 引用上下文对象文件 并且找到消费者
+import {Consumer} from "../../context/index.js"
+export default class zi extends Component {
+    render() {
+        return (
+            <div>
+                zizizi
+                {/* 消费者使用数据 */}
+                <Consumer>
+                    {
+                        // val形参就是传递的数据
+                        (val)=>{
+                            return (
+                                <h1>{val}</h1>
+                            )
+                        }
+                    }
+                </Consumer>
+            </div>
+        )
+    }
+}
+
+```
+
+#### 多个参数
+
+如果需要传递多个值那么就传递一个对象
+
+
+
+今后工作会用到的第三方方式 redux
+
+
+
+# react样式设置
+
+1.行内样式     style={{}}
+
+2.className  类样式
+
+以上的写法类样式举例    react中没有当前样式进队当前组件生效  所以写样式的时候很容易造成样式污染
+
+
+
+## styled-components库来进行样式设置
+
+CSS代码时都有哪些痛点：
+
+**全局污染** - CSS的选择器是全局生效的，所以在class名称比较简单时，容易引起全局选择器冲突，导致样式互相影响。
+**命名混乱** - 因为怕全局污染，所以日常起class名称时会尽量加长，这样不容易重复，但当项目由多人维护时，很容易导致命名风格不统一。
+**样式重用困难** - 有时虽然知道项目上已有一些相似的样式，但因为怕互相影响，不敢重用。
+**代码冗余** - 由于样式重用的困难性等问题，导致代码冗余。
+
+现在随着组件化概念的流行，对从组件层面维护CSS样式的需求日益增大，CSS-in-JS就是在组件内部使用JavaScript对CSS进行了抽象，可以对其声明和加以维护。这样不仅降低了编写CSS样式带来的风险，也让开发变得更加轻松。它和CSS Modules的区别是不再需要CSS样式文件。
+
+
+
+使用
+
+1 下载   npm install --save styled-components
+
+2.创建js文件编写样式
+
+```js
+import styled from "styled-components"
+export let Demostyled=styled.div`
+    color:red;
+    h1{
+        color:pink;
+    }
+
+`
+```
+
+3使用
+
+```jsx
+import React, { Component } from 'react'
+// 引用上下文对象文件 并且找到消费者
+import {Consumer} from "../../context/index.js"
+
+// import "./zi.css"
+import {Demostyled} from "./zistyled.js"
+export default class zi extends Component {
+    render() {
+        return (
+            <Demostyled>
+            <div>
+                zizizi
+                <h1>设置我的颜色</h1>
+
+            </div>
+            </Demostyled>
+        )
+    }
+}
+
+```
+
+# 高阶组件HOC
+
+在React组件的构建过程中，常常有这样的场景，有一类功能需要被不同的组件公用。可以复用在react组件中的代码与逻辑 就是组件中的一个复用技术
+
+
+
+高阶组件-----**-参数是一个组件返回值函数一个组件**
