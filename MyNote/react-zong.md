@@ -2455,3 +2455,1416 @@ export default class zi extends Component {
 
 
 高阶组件-----**-参数是一个组件返回值函数一个组件**
+
+
+
+
+
+
+
+
+
+# redux--状态管理工具
+
+## redux是什么？
+
+解决了react中组件与组件（跨组件传值）的复杂度
+
+redux是专门作状态管理的js库（不是react插件库可以用在其他js框架中例如vue，但是基本用在react中）
+
+## 三大原则
+
+单一数据源:整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 store 中
+
+State 是只读的:唯一改变 state 的方法就是触发 action，action 是一个用于描述已发生事件的普通对象。
+
+使用纯函数来执行修改:为了描述 action 如何改变 state tree ，你需要编写 reducers(一些纯函数，它接收先前的 state 和 action，)
+
+
+
+## 创建
+
+1.下载redux    npm install --save redux
+
+2.创建store文件夹并且创建js文件来等待编写redux
+
+3.开始进行redux对象的创建
+
+```js
+// 1.要使用先引用
+import {createStore} from "redux"
+
+// 2.开始创建store对象(redux对象)
+let store=createStore()
+
+// 3.暴漏
+export default store
+```
+
+4 创建数据
+
+```js
+// 1.要使用先引用
+import {createStore} from "redux"
+// 6初始化数据
+let data={
+    name:"xixi",
+    age:18
+}
+
+// 5创建数据与修改的reducer对象
+// state是数据源
+// actions是修改的那些动作
+// 7把data数据传递给state
+let reducer=(state=data,actions)=>{
+    return state
+}
+
+// 2.开始创建store对象(redux对象)
+// 4.创建数据与修改(现在还不到)reducer中
+let store=createStore(reducer)
+
+// 3.暴漏
+export default store
+```
+
+
+
+5 小小的小测试下     
+
+在全局配置文件中  使用下    
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+============================================
+import store from "./store/index.js"
+// 测试下
+console.log(store.getState())
+================================================
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+```
+
+6组件中使用（读取redux的数据）
+
+```js
+import React, { Component } from 'react'
+// 1.引用redux的store
+import store from "../store"
+export default class rdatab extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            // 2.把值赋值给组件的state方便使用
+            age:store.getState().age
+        }
+    }
+    render() {
+        return (
+            <div>
+                {/* 3.使用数据 */}
+                <h1>组件2----{this.state.age}</h1>
+            </div>
+        )
+    }
+}
+
+```
+
+## 数据修改
+
+1.在redux中添加那些修改的动作
+
+```js
+// 数据修改
+import {createStore} from "redux"
+
+let data={
+    name:"xixi",
+    age:18
+}
+
+// actions 包含的就是修改的任务
+// +1 ADD
+// -1 DEL
+// 在工作中redux的任务名通常都是大写
+let reducer=(state=data,actions)=>{
+    switch (actions.type) {
+        case "ADD_AGE_LIST_XXX":
+                // 返回添加之后的数据
+                return {...state,age:state.age+1}
+ 
+        case "DEL_AGE_LIST_XXX":
+                // 返回减少之后的数据
+                return {...state,age:state.age-1}
+          
+    
+        default:
+            return state
+    
+    }
+
+}
+
+
+let store=createStore(reducer)
+
+export default store
+```
+
+2.如何调用那些修改的任务?
+
+dispatch()方法来进行调用修改动作
+
+```js
+import React, { Component } from 'react'
+// 1.引用redux的store
+import store from "../store"
+export default class rdatab extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            // 2.把值赋值给组件的state方便使用
+            age:store.getState().age
+        }
+    }
+    // 添加的
+    add=()=>{
+        // **********
+        // 调用redux的修改动作
+        store.dispatch({type:"ADD_AGE_LIST_XXX"})
+        // **********
+    }
+    // 减少的
+    del=()=>{
+        store.dispatch({type:"DEL_AGE_LIST_XXX"})
+    }
+    render() {
+        return (
+            <div>
+                {/* 3.使用数据 */}
+                <h1>组件2----{this.state.age}</h1>
+                <button onClick={this.add}>+1</button>
+                <button onClick={this.del}>-1</button>
+            </div>
+        )
+    }
+}
+
+```
+
+3.创建好之后点击按钮发现数据没有变化   （测试redux的修改是否被调用了）
+
+```js
+// 数据修改
+import {createStore} from "redux"
+
+let data={
+    name:"xixi",
+    age:18
+}
+
+// actions 包含的就是修改的任务
+// +1 ADD
+// -1 DEL
+// 在工作中redux的任务名通常都是大写
+let reducer=(state=data,actions)=>{
+    switch (actions.type) {
+        case "ADD_AGE_LIST_XXX":
+                // 返回添加之后的数据
+                // 测试是否调用
+                console.log({...state,age:state.age+1})
+                return {...state,age:state.age+1}
+ 
+        case "DEL_AGE_LIST_XXX":
+                // 返回减少之后的数据
+                return {...state,age:state.age-1}
+          
+    
+        default:
+            return state
+    
+    }
+    
+}
+
+
+let store=createStore(reducer)
+
+export default store
+```
+
+当我执行发现确实调用   而且数据也变化了  但是页面的调用并没有修改  原因是因为 组件的render没有重新渲染
+
+4 解决redux数据变了但是render没有渲染
+
+subscribe()订阅一个变化监听器，每当改变store的时候就会执行
+
+```js
+import React, { Component } from 'react'
+// 1.引用redux的store
+import store from "../store"
+export default class rdatab extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            // 2.把值赋值给组件的state方便使用
+            age:store.getState().age
+        }
+    }
+
+    componentDidMount() {
+          // subscribe就是当redux的数据改变了他就会触发
+          store.subscribe(()=>{
+            this.setState({
+                age:store.getState().age
+            })
+        })
+    }
+    
+    // 添加的
+    add=()=>{
+        // **********
+        // 调用redux的修改动作
+        store.dispatch({type:"ADD_AGE_LIST_XXX"})
+        // **********
+    }
+    // 减少的
+    del=()=>{
+        store.dispatch({type:"DEL_AGE_LIST_XXX"})
+    }
+    render() {
+        return (
+            <div>
+                {/* 3.使用数据 */}
+                <h1>组件2----{this.state.age}</h1>
+                <button onClick={this.add}>+1</button>
+                <button onClick={this.del}>-1</button>
+            </div>
+        )
+    }
+}
+
+```
+
+# redux封装
+
+## 封装 修改的派发动作
+
+在今后的项目开发中会有很多修改动作   每个动作任务(就是dispatch调用的对象)都会出现在  各各组件中  如下
+
+```js
+    // 添加的
+    add=()=>{
+        // **********
+        // 调用redux的修改动作
+        store.dispatch({type:"ADD_AGE_LIST_XXX"})
+        // **********
+    }
+    // 减少的
+    del=()=>{
+        store.dispatch({type:"DEL_AGE_LIST_XXX"})
+    }
+```
+
+以上方式写没有问题  但是到后期修改的时候比较麻烦  所以我们可以尝试把这些派发任务封装起来 便于后期的维护
+
+开始封装  
+
+1.在store文件夹下创建一个文件actionCreator.js(这个文件名每家公司都不同)用来存放那些派发动作
+
+2.开始封装动作
+
+```js
+let add=()=>{
+    return {type:"ADD_AGE_LIST_XXX"}
+}
+let del=()=>{
+    return {type:"DEL_AGE_LIST_XXX"}
+}
+
+export default{
+    add,del
+}
+```
+
+3.在组件内引用使用
+
+```js
+import React, { Component } from 'react'
+// 1.引用redux的store
+import store from "../store"
+
+import actionCreator from "../store/actionCreator.js"
+export default class rdatab extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            // 2.把值赋值给组件的state方便使用
+            age:store.getState().age
+        }
+    }
+
+    componentDidMount() {
+          // subscribe就是当redux的数据改变了他就会触发
+          store.subscribe(()=>{
+            this.setState({
+                age:store.getState().age
+            })
+        })
+    }
+    
+   ***************************使用actionCreator*（**************
+    add=()=>{
+        // **********
+        // 调用redux的修改动作
+        store.dispatch(actionCreator.add())
+        // **********
+    }
+    // 减少的
+    del=()=>{
+        store.dispatch(actionCreator.del())
+    }
+       ***************************使用actionCreator*（**************
+    render() {
+        return (
+            <div>
+                {/* 3.使用数据 */}
+                <h1>组件2----{this.state.age}</h1>
+                <button onClick={this.add}>+1</button>
+                <button onClick={this.del}>-1</button>
+            </div>
+        )
+    }
+}
+
+```
+
+## 封装派发动作名
+
+因为我们在修改的时候需要使用一个对象来调用修改 比如  {type:"你的修改名"}但是这个名字出现了多次所以进行封装
+
+1.新建一个actionType.js的文件
+
+2.开始封装
+
+```js
+export let ADD_AGE_LIST_XXX="ADD_AGE_LIST_XXX"
+export let DEL_AGE_LIST_XXX="DEL_AGE_LIST_XXX"
+```
+
+3分别在原来使用的地方进行引用使用
+
+```js
+import * as actionType from "./actionType.js"
+
+let add=()=>{
+    return {type:actionType.ADD_AGE_LIST_XXX}
+}
+let del=()=>{
+    return {type:actionType.DEL_AGE_LIST_XXX}
+}
+
+export default{
+    add,del
+}
+```
+
+## 封装reducer  
+
+原来我们的reducer是写在redux文件中  不够灵活所以我们进行单独的封装
+
+1.新建一个reducer.js的文件
+
+2.开始封装
+
+```js
+import * as actionType from "./actionType.js"
+let data={
+    name:"xixi",
+    age:18
+}
+
+// actions 包含的就是修改的任务
+// +1 ADD
+// -1 DEL
+// 在工作中redux的任务名通常都是大写
+let reducer=(state=data,actions)=>{
+    switch (actions.type) {
+        case actionType.ADD_AGE_LIST_XXX:
+                // 返回添加之后的数据
+                // 测试是否调用
+                console.log({...state,age:state.age+1})
+                return {...state,age:state.age+1}
+ 
+        case actionType.DEL_AGE_LIST_XXX:
+                // 返回减少之后的数据
+                return {...state,age:state.age-1}
+          
+    
+        default:
+            return state
+    
+    }
+    
+}
+
+export default reducer
+```
+
+3使用:
+
+```js
+import reducer from "./reducer.js"
+
+// 数据修改
+import {createStore} from "redux"
+
+
+
+
+let store=createStore(reducer)
+
+export default store
+```
+
+## reducer的模块以及合并
+
+在我们的项目中需要每个组件一个reducer(数据和修改动作的容器)那么我们就进行拆分
+
+1.创建数据组件自己的reducer
+
+```
+let data={
+    name:"我是封装的xixi"
+}
+let rdatar=(state=data,actions)=>{
+    return state
+}
+
+export default rdatar
+```
+
+2.render被分成了很多个   但是store就一个  所以我们需要进行reducer模块的合并（重点）
+
+```js
+// 1.引用你要合并的reducer
+import rdatabr from "./reducerModel/rdatabr.js"
+import rdatar from "./reducerModel/rdatar.js"
+// 2.引入合并的工具combineReducers就是合并reducer模块的方法
+import {combineReducers} from "redux"
+// 3.开始合并
+let reducer=combineReducers({
+    rdatabr,
+    rdatar
+})
+
+export default reducer
+```
+
+3 但是合并完成之后发现页面的所以有数据不见了  
+
+原因很简单因为你合并之后我们取值的时候  store.getState().模块名.xxx
+
+
+
+
+
+# react-redux
+
+之前的写法redux与react的耦合度过于高。代码不够简洁（组件中出现了大量的store对象）
+
+**react-redux 是一个专门为reacr开发的操纵redux数据的插件 简化了react在操作redux的复杂度**
+
+
+
+使用：
+
+1.npm install --save react-redux、
+
+2.<Provider/>组件：把 store 提供给其子组件 （在上下文对象中 他是数据的生产者  但是在react-redux中它的作用就是把store对象进行向下传递  让所有的子组件都能使用  那么组件就不需要单独去引用store对象）
+
+写在全局配置文件中   index.js
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './components/reduxdemo.jsx';
+import reportWebVitals from './reportWebVitals';
+
+// 1.引用react-redux
+import {Provider} from "react-redux"
+// 4.你要引用你写的redux中的store
+import store from "store/index.js"
+
+ReactDOM.render(
+  // 2.进行组件的办包裹
+  // 3.设置store属性
+  // 5.传递store
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+```
+
+3.需要使用react-redux中提供的connect高阶组件  让组件本体和redux进行连接（关联）
+
+```js
+import React, { Component } from 'react'
+// 要使用redux的数据   我们在这个例子中使用的是react-redux  
+// 所以第一步先引用connect这个高阶组件进行连接
+
+import {connect} from "react-redux"
+class reactredux extends Component {
+    render() {
+        return (
+            <div>
+                <h1>react-redux进行数据操作</h1>\
+             
+            </div>
+        )
+    }
+}
+// 为什么有两个圆括号？
+// 因为connect是一个方法  当这个方法被调用之后才是一个高阶组件
+export default connect(state=>({state}))(reactredux)
+
+
+
+
+
+
+
+
+```
+
+4 使用数据 this.props.state.模块名.数据
+
+```jsx
+import React, { Component } from 'react'
+// 要使用redux的数据   我们在这个例子中使用的是react-redux  
+// 所以第一步先引用connect这个高阶组件进行连接
+
+import {connect} from "react-redux"
+class reactredux extends Component {
+    render() {
+        return (
+            <div>
+                <h1>react-redux进行数据操作</h1>\
+                {/* <h1>组件中直接使用---{this.props.state.模块名.数据}</h1> */}
+                <h1>组件中直接使用---{this.props.state.reduxm.age}</h1>
+            </div>
+        )
+    }
+}
+// 为什么有两个圆括号？
+// 因为connect是一个方法  当这个方法被调用之后才是一个高阶组件
+export default connect(state=>({state}))(reactredux)
+
+
+```
+
+修改数据:
+
+修改数据还是使用dispatch来进行修改的触发  但是现在不需要关联store对象了
+
+ this.props.dispatch()修改 不要render重新渲染  而是react-redux帮助我们已经进行了解决
+
+```js
+import React, { Component } from 'react'
+// 要使用redux的数据   我们在这个例子中使用的是react-redux  
+// 所以第一步先引用connect这个高阶组件进行连接
+
+import {connect} from "react-redux"
+import * as Ac from "../store/actionCreator.js"
+class reactredux extends Component {
+    add=()=>{
+        // 调用修改
+        this.props.dispatch(Ac.add())
+    }
+    del=()=>{
+        // 调用修改
+        this.props.dispatch(Ac.del())
+    }
+    render() {
+        return (
+            <div>
+                <h1>react-redux进行数据操作</h1>\
+                {/* <h1>组件中直接使用---{this.props.state.模块名.数据}</h1> */}
+                <h1>组件中直接使用---{this.props.state.reduxm.age}</h1>
+                <button onClick={this.add}>+1</button>
+                <button onClick={this.del}>-1</button>
+            </div>
+        )
+    }
+}
+// 为什么有两个圆括号？
+// 因为connect是一个方法  当这个方法被调用之后才是一个高阶组件
+export default connect(state=>({state}))(reactredux)
+```
+
+# 路由
+
+根据不同的url 来切换对应的组件
+
+实现spa（单页面应用）应用：
+整个项目只有一个完整页面
+页面切换不会刷新页面（不会感觉页面的闪烁 更加贴近原声应用的体验）
+
+## 路由库分类
+
+React-Router：提供了一些router的核心API，包括Router, Route, Switch等，但是它没有提供 DOM 操作进行跳转的API。
+
+React-Router-DOM：提供了 BrowserRouter, Route, Link等 API,我们可以通过 DOM 的事件控制路由。例如点击一个按钮进行跳转，大多数情况下我们是这种情况，所以在开发过程中，我们更多是使用React-Router-DOM。
+
+
+
+## 路由模式-HashRouter 和 BrowserRouter
+
+**HashRouter** （hash模式）
+url中会有个#，例如localhost:3000/#，HashRouter就会出现这种情况，它是通过hash值来对路由进行控制。如果你使用HashRouter，你的路由就会默认有这个#。刷新不会丢失
+
+**BrowserRouter**（历史记录模式 ） 
+是通过历史记录api来进行路由的切换的很多情况下我们则不是这种情况，我们不需要这个#，因为它看起来很怪，这时我们就需要用到BrowserRouter。刷新会丢失404（上线中会出现问题  本地开发中不会）
+
+## 路由的创建
+
+1.下载路由模块
+npm install --save react-router-dom
+
+2.设置路由模式
+
+实在全局配置文件也就是index.js中
+
+先引用路由模式从react-router-dom中
+
+使用路由模式
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+// 1.引用路由模式
+import {BrowserRouter} from "react-router-dom"
+
+ReactDOM.render(
+  // 使用路由模式
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+  document.getElementById('root')
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+```
+
+3创建理由页面组件
+
+在src下新建一个views的文件夹  在其中进行创建
+
+4.配置路由规则与路由出口
+
+在vue中路由规则和路由出口是分开的
+
+但是在react-router-dom中路由规则与出口都是使用Route进行配置的
+
+```jsx
+import React, { Component } from 'react'
+// 引用路由规则与出口的Route\
+import {Route} from "react-router-dom"
+// 引用你要配置路由的页面组件
+import Home from "../views/home.jsx"
+import Phone from "../views/phone.jsx"
+import Shop from "../views/shop.jsx"
+import User from "../views/user.jsx"
+export default class index extends Component {
+    render() {
+        return (
+            <div>
+                {/* 设置路由规则与出口
+                使用Route来进行配置  要使用先引用 */}
+                {/* <Route path="/路径" component={组件}/> */}
+                <Route path="/home" component={Home}/>
+                <Route path="/phone" component={Phone}/>
+                <Route path="/shop" component={Shop}/>
+                <Route path="/user" component={User}/>
+            </div>
+        )
+    }
+}
+
+```
+
+5 把路由配置文件  在index中进行引用
+
+# 路由导航
+
+## 声明式
+
+1.Link组件 最基本的路由导航
+
+```jsx
+import React, { Component } from 'react'
+// 引用路由规则与出口的Route\
+import {Route,Link} from "react-router-dom"
+// 引用你要配置路由的页面组件
+import Home from "../views/home.jsx"
+import Phone from "../views/phone.jsx"
+import Shop from "../views/shop.jsx"
+import User from "../views/user.jsx"
+export default class index extends Component {
+    render() {
+        return (
+            <div>
+                {/* 设置路由声明式导航 要使用先引用 to属性就是去哪里*/}
+                <Link to="/home">首页</Link>&nbsp;&nbsp;
+                <Link to="/phone">手机</Link>&nbsp;&nbsp;
+                <Link to="/shop">购物</Link>&nbsp;&nbsp;
+                <Link to="/user">我的</Link>&nbsp;&nbsp;
+
+                {/* 设置路由规则与出口
+                使用Route来进行配置  要使用先引用 */}
+                {/* <Route path="/路径" component={组件}/> */}
+                <Route path="/home" component={Home}/>
+                <Route path="/phone" component={Phone}/>
+                <Route path="/shop" component={Shop}/>
+                <Route path="/user" component={User}/>
+            </div>
+        )
+    }
+}
+
+```
+
+2.NavLink  它的本质也是一个声明式路由导航  Link能干的他都可以  但是他比link多了一个动态添加类名（active的类名）我们可以给这个类名设置选中样式
+
+但是active这个类名太过于常见   所以很容易造成样式冲突  那么我们怎么修改这个类名？
+
+```jsx
+import React, { Component } from 'react'
+// 引用路由规则与出口的Route\
+import {Route,Link,NavLink} from "react-router-dom"
+// 引用你要配置路由的页面组件
+import Home from "../views/home.jsx"
+import Phone from "../views/phone.jsx"
+import Shop from "../views/shop.jsx"
+import User from "../views/user.jsx"
+export default class index extends Component {
+    render() {
+        return (
+            <div>
+                {/* 设置路由声明式导航 要使用先引用 to属性就是去哪里*/}
+                {/* <Link to="/home">首页</Link>&nbsp;&nbsp;
+                <Link to="/phone">手机</Link>&nbsp;&nbsp;
+                <Link to="/shop">购物</Link>&nbsp;&nbsp;
+                <Link to="/user">我的</Link>&nbsp;&nbsp; */}
+
+                {/* navlink导航 要使用先引用*/}
+                {/* 默认是active类名
+                需要修改的话  使用activeClassName来修改 */}
+                <NavLink to="/home" activeClassName="xiaoming">首页</NavLink>
+                <NavLink to="/phone" activeClassName="xiaoming">手机</NavLink>
+                <NavLink to="/shop" activeClassName="xiaoming">购物</NavLink>
+                <NavLink to="/user" activeClassName="xiaoming">我的</NavLink>
+
+                {/* 设置路由规则与出口
+                使用Route来进行配置  要使用先引用 */}
+                {/* <Route path="/路径" component={组件}/> */}
+                <Route path="/home" component={Home}/>
+                <Route path="/phone" component={Phone}/>
+                <Route path="/shop" component={Shop}/>
+                <Route path="/user" component={User}/>
+            </div>
+        )
+    }
+}
+
+```
+
+如果你使用了navlink但是没有动态添加class名  那么
+
+在vscode的终端中启动项目可能会无效 在外部cmd中启动
+
+## 编程式导航(贼坑)
+
+就是使用js的方式进行路由页面的跳转
+
+## 语法
+
+ this.props.history.push("/去哪里")
+
+```jsx
+import React, { Component } from 'react'
+import Tb from "../components/topbar.jsx"
+export default class home extends Component {
+    fun=()=>{
+        // 编程式导航
+        this.props.history.push("/phone")
+    }
+    render() {
+        return (
+            <div>
+                <Tb/>
+                首页
+                <button onClick={this.fun}>点我去phone</button>
+            </div>
+        )
+    }
+}
+
+```
+
+
+
+## 坑
+
+大家会发现相同的编程式导航的代码  写在不同位置可能有的时候好  有的时候会报错
+
+ TypeError: Cannot read property 'push' of undefined 
+
+原因是因为   不是被路由所管理的页面使用编程式导航就会出现如上错误
+
+为什么会出现上面的情况 被路由所管理的页面才会有history属性
+
+
+
+## 解决
+
+我就是想让不是被路由所管理的页面使用编程式导航怎么办？
+
+使用 withRouter作用是让不是路由切换的组件也具有路由切换组件的三个属性(location match history)
+
+```jsx
+import React, { Component } from 'react'
+import {NavLink,withRouter} from "react-router-dom"
+ class topbar extends Component {
+    fun=()=>{
+        // 编程式导航
+        this.props.history.push("/phone")
+    }
+    render() {
+        return (
+            <div>
+                <NavLink to="/home">首页</NavLink>
+                <NavLink to="/phone">手机</NavLink>
+                <hr />
+                <button onClick={this.fun}>点我去phone</button>
+            </div>
+        )
+    }
+}
+// 使用withRouter高阶组件来进行完成
+export default withRouter(topbar)
+```
+
+## 其他编程式导航
+
+replace() 替换当前路径
+
+goBack()后退
+
+goForward()前进
+
+# 精准匹配 exact
+
+就是在vue中我们的首页的路径写成/ 没有太大问题
+
+但是到了react中如果某一样路由配置path="/" 那么无论怎么切换  这一项都会存在
+
+所以使用精准匹配来设置
+
+```html
+ {/* 精准匹配 就是路径和url必须一样才渲染 */}
+              
+                <Route exact path="/" component={Home}/>
+                <Route path="/phone" component={Phone}/>
+                <Route path="/shop" component={Shop}/>
+                <Route path="/user" component={User}/>
+```
+
+# 404页面
+
+就是在配置路由规则的时候不加path即可  但是需要放在最下面  要不然会被匹配到
+
+```html
+ 
+                <Route exact path="/" component={Home}/>
+                <Route path="/phone" component={Phone}/>
+                <Route path="/shop" component={Shop}/>
+                <Route path="/user" component={User}/>
+
+                {/* 404页面必须在最下面 */}
+                <Route component={No}/>
+```
+
+但是大家会发现404页面在任何路径下都会匹配到  怎么解决呢？
+
+
+
+# Switch 唯一渲染
+
+为了解决route的唯一渲染，它是为了保证路由只渲染一个路径。
+<Switch>是唯一的，因为它仅仅只会渲染一个路径，当它匹配完一个路径后，就会停止渲染了。
+
+# 重定向
+
+ <Redirect from="/" to="/home" exact/>
+
+# 多级路由
+
+1.创建路由组件页面
+
+2.在需要设置二级路由的一级路由页面中设置 Route 来配置规则与出口
+
+```jsx
+import React, { Component } from 'react'
+import Era from "./er/era.jsx"
+import Erc from "./er/erc.jsx"
+import {Route,NavLink} from "react-router-dom"
+export default class phone extends Component {
+    render() {
+        return (
+            <div>
+                phone
+                {/* 设置导航  注意路径 */}
+                <NavLink to="/phone/era">era</NavLink>
+                <NavLink to="/phone/erc">erc</NavLink>
+                {/* 设置出口与规则 */}
+                <Route path="/phone/era" component={Era}/>
+                <Route path="/phone/erc" component={Erc}/>
+            </div>
+        )
+    }
+}
+
+```
+
+# 路由传参
+
+## params方式
+
+（1）
+
+设置路由规则上面的接收参数
+
+```
+   <Route path="/all/:xiaoming" component={All}/>
+```
+
+
+
+（2）传递
+
+```
+      this.props.history.push("/all/我是params方式传递参数")
+```
+
+
+
+（3）接收
+
+```
+接收路由传参-{this.props.match.params.xiaoming}
+```
+
+优势 ： 刷新地址栏，参数依然存在
+
+缺点 ： 只能传字符串，并且，如果传的值太多的话，url会变得长而丑陋。
+
+
+
+## state方式
+
+（1）发送、
+
+<Link to={{ pathname : '/你要去的路径' , state: { key: 'val' }}}>点我去d</Link>
+
+（2）接收
+
+```
+ 接收路由传参-{this.props.location.state.name}
+```
+
+优势：传参优雅地址栏不显示传递的数据，传递参数可传对象；
+
+缺点：刷新地址栏，参数丢失
+
+
+
+# 路由render渲染
+
+如果想对路由进行验证的话只需要在函数中进行逻辑编写 既可以设置具体渲染那个组件
+
+
+
+# axios拦截器
+
+同VUE
+
+# 跨域
+
+修改配置文件进行正向的代理跨域
+
+1.找到项目目录下/node_modules/react-scripts/config/webpackDevServer.config.js
+
+2.找到进行修改 proxy:{
+        "/api（可以随便写）":{
+             target:"请求地址",
+             changeOrigin:true,
+             "pathRewrite":{
+               "^/api（和上面一样）":"/"
+             }
+        }
+    },
+
+3.修改你的请求为/api
+
+## 弹射
+
+刚才在解决跨域的时候配置文件隐藏过深非常麻烦。
+
+使用弹射（把配置文件设置根目录中来）eject
+
+注意注意注意：去公司请不要随便弹射（出问题概不负责）
+
+具体详见ppt
+
+
+
+
+
+# 状态提升
+
+React中的状态提升概括来说,就是*多个组件需要反映相同的变化数据*，**提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.**
+
+```jsx
+import React, { Component } from 'react'
+import Zia from "./zia.jsx"
+import Zib from "./zib.jsx"
+export default class fu extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            name:"xixi"
+        }
+    }
+    fun=function(){
+        this.setState({
+            name:"haha"
+        })
+    }
+    render() {
+        return (
+            <div>
+                fuffufufuf
+                <button onClick={this.fun.bind(this)}>点我修改</button>
+                <Zia name={this.state.name}/>
+                <Zib name={this.state.name}/>
+            </div>
+        )
+    }
+}
+
+```
+
+# 性能优化
+
+原因是因为 我们在更新数据的时候使用setState修改整个数据 那么数据变了  便利的时候所有内容都要被重新渲染。
+
+数量少没有关系 如果便利出来的数据很多  那么就会严重影响我们的性能
+
+1.写一个很low性能的代码
+
+
+
+## 解决
+
+使用生命周期的：
+shouldComponentUpdate(nextProps最新的props,nextState最新的state) 判定组件是否要更新
+
+```jsx
+import React, { Component } from 'react'
+
+export default class zi extends Component {
+    shouldComponentUpdate(nextprops){
+        // 判断组件是否要更新  里面必须有一个布尔值的返回值
+       // return true //要更新
+       // return false //不更新
+       return nextprops.style!==this.props.style
+    }
+    render() {
+        console.log("我是子组件")
+        return (
+            <div>
+               <input type="checkbox" onChange={this.props.zifun.bind(this,this.props.i)}/>
+               <span style={{backgroundColor:this.props.style?"red":''}}>{this.props.title}</span>
+            </div>
+        )
+    }
+}
+
+```
+
+纯组件  纯组件（PureComponent）--类组件中使用
+
+PureComponent是优化react应用程序最重要的方法，组件发生更新时，组件的props和state没有改变，render方法就不会触发 .可以减少不必要的render次数，提高性能。
+
+````jsx
+import React, { Component,PureComponent } from 'react'
+
+export default class zi extends PureComponent {
+ 
+    render() {
+        console.log("我是子组件")
+        return (
+            <div>
+               <input type="checkbox" onChange={this.props.zifun.bind(this,this.props.i)}/>
+               <span style={{backgroundColor:this.props.style?"red":''}}>{this.props.title}</span>
+            </div>
+        )
+    }
+}
+
+````
+
+**React.memo（） --  无状态组件中使用**
+
+
+
+# HOOK
+
+就是让无状态组件/函数组件  可以使用状态  ref 生命周期等这些属性
+
+React Hooks是React 16.8.0版本推出的新特性 主要的作用就是让无状态组件 可以使用状态和react的其他特性。（在react开发中状态的管理是必不可少的  以前为了进行状态管理需要使用类组件或者redux等来管理）
+
+
+Hook在class中没有作用
+
+## useState 函数组件中定义状态
+
+let [val(当前状态的值),setVal(改变状态的函数)]=useState(当前状态的初始值)
+
+### 定义状态
+
+```js
+import {useState} from "react"
+function Usestate(){
+    // let [val(当前状态的值),setVal(改变状态的函数)]=useState(当前状态的初始值)
+   let [text,settext]= useState("你好")
+    return (
+        <div>
+            我是一个函数组件--{text}
+        </div>
+    )
+}
+
+
+export  default Usestate
+```
+
+### 修改
+
+```jsx
+import {useState} from "react"
+function Usestate(){
+    // let [val(当前状态的值),setVal(改变状态的函数)]=useState(当前状态的初始值)
+   let [text,settext]= useState("你好")
+//    创建函数
+    function fun(){
+        // 修改
+        settext(text="你坏")
+    }
+    return (
+        <div>
+            我是一个函数组件--{text}
+            <button onClick={fun}>点我修改</button>
+        </div>
+    )
+}
+
+
+export  default Usestate
+```
+
+
+
+### usestate多个状态怎么办？
+
+1.使用useState创建多次
+
+```jsx
+import {useState} from "react"
+
+function Com(){
+    // 1.使用useState创建多次
+    let [vala,setVala]=useState(1);
+    let [valb,setValb]=useState(2);
+    let [valc,setValc]=useState(3);
+    let [vald,setVald]=useState(4);
+
+    let fun=()=>{
+        setVald(vald="我被改了")
+    }
+    return (
+        <div>
+            <h1>多个状态怎么办？--{vala}--{valb}--{valc}--{vald}</h1>
+            <button onClick={fun}>点我修改第四个状态</button>
+        </div>
+    )
+}
+export default Com
+```
+
+2.useState传递对象（推荐使用）
+
+```jsx
+import {useState} from "react"
+
+function Com(){
+   let [val,setVal]=useState({
+       vala:11,
+       valb:22,
+       valc:33
+   })
+   let fun=()=>{
+       setVal({...val,valc:"我变了"})
+   }
+    return (
+        <div>
+         {val.vala}--{val.valb}--{val.valc}
+         <button onClick={fun}>点我修改第三个</button>
+        </div>
+    )
+}
+export default Com
+```
+
+
+
+## useRef 让无状态组件可以使用ref
+
+```jsx
+import {useState,useRef} from "react"
+
+function Com(){
+    let u=useRef(null)
+    let fun=()=>{
+        console.log(u.current)
+        u.current.style.color="red"
+    }
+    return (
+        <div>
+            <p ref={u}>修改我的样式</p>
+            <button onClick={fun}>点我修改</button>
+        </div>
+    )
+}
+export default Com
+```
+
+## useEffect 让函数组件可以使用生命周期
+
+useEffect：函数组件中没有生命周期，那么可以使用 useEffect 来替代。可以把 useEffect Hook 看做 componentDidMount，componentDidUpdate 和 componentWillUnmount 这三个函数的组合。
+
+```jsx
+import {useState,useEffect} from "react"
+
+function Com(){
+    useEffect(()=>{
+        console.log("我被调用了")
+        document.title="你好么么哒"
+    })
+    return (
+        <div>
+            <h1>函数组件可以使用生命周期</h1>
+        </div>
+    )
+}
+export default Com
+```
+
+
+
+## useReducer 一个状态有多个修改操作的时候
+
+useReducer这个跟redux一点关系都没有
+
+```jsx
+import {useState,useReducer} from "react"
+
+function Com(){
+    let reducer=(state,action)=>{
+        switch (action.type) {
+            case "UP":
+                return state.toUpperCase()
+               
+            case "SUBSTR":
+                return state.substr(2,4)
+               
+            case "UP_SUBSTR":
+                
+                return state.toUpperCase().substr(1,3)
+        
+            default:
+                return state
+                
+        }
+    
+    }
+    // let [变量名,调用修改的方法]=useReducer(修改的动作片集合,初始值)
+    let [val,dispatch]=useReducer(reducer,"abcdefg")
+
+    let funa=()=>{
+        dispatch({type:"UP"})
+    }
+    let funb=()=>{
+        dispatch({type:"SUBSTR"})
+    }
+    let func=()=>{
+        dispatch({type:"UP_SUBSTR"})
+    }
+ 
+    return (
+        <div>
+            <h1>一条数据有多个修改的使用---{val}</h1>
+            <button onClick={funa}>大写</button>
+            <button onClick={funb}>截取</button>
+            <button onClick={func}>大写加截取</button>
+        </div>
+    )
+}
+export default Com
+```
+
+
+

@@ -32,25 +32,26 @@
                     arrb: [{ title: "bbb", bool: false }]//移动下面的已完成
                 }
             }
-            // 检查bool
+            // 点击检查bool
             boolcheck = () => {
                 return this.state.arr.map((v, i) => {
                     v.bool = !v.bool;
                     // console.log(v.bool);
                     if (!v.bool) {
-                        this.state.arrb.push(this.state.arra[i])
-                        this.state.arra.splice(i, 1);
-                        // console.log(this.state.arra);
-                        console.log(this.state.arrb);
+                        console.log(this);
+                        this.setState.arrb=this.state.arra.push(this.state.arra[i])
+                        this.setState.arra=this.state.arra.splice(i, 1);
+                        
                     }
                     // console.log(this.state.arra);
-                    // this.showedlist()
-                // this.showinglist()
+                        console.log(this.state.arrb);
+                    console.log(1)
                 })
                 
             }
             // 未完成
             showinglist = () => {
+                
                 return this.state.arra.map((v, i) => {
                     return (
                         <li key={i}><input type="checkbox" onClick={this.boolcheck} />{v.title},{v.bool ? "真" : "假"}</li>
@@ -59,9 +60,11 @@
             }
             // 已完成
             showedlist = () => {
+                console.log(this.state.arra);
+                        console.log(this.state.arrb);
                 return this.state.arrb.map((v, i) => {
                     return (
-                        <li key={i}><input type="checkbox" onClick={this.boolcheck} />{v.title},{v.bool ? "真" : "假"}</li>
+                        <li key={i}><input type="checkbox" onClick={this.boolcheck1} />{v.title},{v.bool ? "真" : "假"}</li>
                     )
                 })
             }
